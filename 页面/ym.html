@@ -1,0 +1,333 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>页面</title>
+	<style type="text/css">
+		nav{
+			height: 100px;
+			width: 100%;
+			background-color: #FF7C00; 
+		}
+		nav ul li{
+			float: left;
+			padding:30px;
+		}
+		a{
+			text-decoration: none;
+			color: black;
+		}
+		#left-box{
+			background-color: #F4F4F4;
+			width: 30%;
+			height: 500px;
+			float: left;
+		}
+		#left-box ul li{
+			padding: 30px 10px;
+		}
+		#left-box ul li a{
+			text-decoration: none;
+			color: #9C9C9C;
+		}
+		#left-box ul li a:hover{
+			color: #FF5000;
+		}
+		#screen{
+			width:800px;
+			height:500px;
+	 		overflow:hidden; 
+			position:relative;
+		}
+		#screen li{ 
+			width:800px; 
+			height:500px; 
+			overflow:hidden; 
+			float:left;
+		}
+		#screen ul{ 
+			position:absolute; 
+			left:0; 
+			top:0px; 
+			width:4800px;
+		}
+		#right-box ol{ 
+			position:absolute; 
+			right:10px; 
+			bottom:10px; 
+			line-height:20px; 
+			text-align:center;
+		}
+		#right-box ol li{ 
+			float:left; 
+			width:20px; 
+			height:20px; 
+			background:#fff; 
+			border:1px solid #ccc; 
+			margin-left:10px; 
+			cursor:pointer;
+		}
+		#right-box ol li.current{ 
+			background:yellow;
+		}
+		.clearfix:before, .clearfix:after {
+    		content: "";
+    		display: table;
+		}
+		.clearfix:after {
+    		clear: both;
+		}
+		.clearfix {
+    		*zoom: 1; /*IE/7/6*/
+		}
+		/*公共类*/
+		.w {
+    		/*版心 提取 */
+    		width: 1210px;
+    		margin: 0 auto;
+		}
+		.shopping dl {
+    		width: 198px;
+    		float: left;
+		}
+	.shopping dt,.coverage .dt {
+    	font-size: 16px;
+    	height: 28px;
+    	font-family: "微软雅黑";
+    	padding-top: 10px;
+	}
+	.shopping dd {
+    	height: 20px;
+	}
+	.coverage {
+    	float: right;
+    	width: 210px;
+    	height: 165px;
+    	background: url(../images/china.png) no-repeat left bottom;
+	}
+	.coverage .dd {
+    	margin-top: 10px;
+	}
+	.coverage p {
+    	line-height: 18px;
+	}
+	.looklook {
+    text-align: right;
+    margin-top: 5px;
+	}
+	.againw {
+    	border-top: 1px solid #E5E5E5;
+    	padding: 23px 0 30px 0;
+    	margin-top: 30px;
+    	text-align: center;
+	}
+	.links {
+    	height: 25px;
+	}
+	.links a {
+    	padding: 0 6px;
+	}
+	.copyright {
+    	line-height: 18px;
+    	margin-bottom: 10px;
+	}
+	</style>
+	<SCRIPT TYPE="text/javascript">
+    	function animate(obj,target){
+        	clearInterval(obj.timer);  // 先清除定时器
+        	var speed = obj.offsetLeft < target ? 15 : -15;  // 用来判断 应该 +  还是 -
+        	obj.timer = setInterval(function() {
+            	var result = target - obj.offsetLeft; // 因为他们的差值不会超过5
+            	obj.style.left = obj.offsetLeft + speed + "px";
+            	if(Math.abs(result)<=15)  // 如果差值不小于 5 说明到位置了
+            	{
+                	clearInterval(obj.timer);
+                	obj.style.left = target + "px";  // 有5像素差距   我们直接跳转目标位置
+            	}
+        	},10)
+    	}
+    	window.onload = function() {
+       		// 获取元素
+        	var box = document.getElementById("screen");  // 大盒子
+        	var ul = document.getElementById("ul");
+        	var ulLis = ul.children;
+
+       		// 操作元素
+
+       		// 因为我们要做无缝滚动  ，所以要克隆第一张，放到最后一张后面去
+       		// a.appendchild(b)   把 b 放到 a 的最后面
+        	// 1. 克隆完毕
+        	ul.appendChild(ul.children[0].cloneNode(true));
+
+        	// 2. 创建 ol  和  小 li
+        	console.log(ulLis.length);
+        	var ol = document.createElement("ol");  // 生成的是ol
+        	box.appendChild(ol); // 把ol 追加到  box 里面
+        	for(var i=0;i<ulLis.length-1;i++)
+        	{
+            	var li = document.createElement("li");
+            	li.innerHTML = i + 1;  //  给里面小的li 文字  1 2 3 4 5
+            	ol.appendChild(li);  // 添加到 ol 里面
+        	}
+        	ol.children[0].className = "current";
+
+        	//3. 开始动画部分
+        	var olLis = ol.children;
+         	for(var i=0; i<olLis.length;i++)
+         	{
+             	olLis[i].index = i;  // 获得当前第几个小li 的索引号
+             	olLis[i].onmouseover = function() {
+                 	for(var j=0;j<olLis.length;j++)
+                 	{
+                     	olLis[j].className = "";  // 所有的都要清空
+                 	}
+                 	this.className = "current";
+                 	animate(ul,-this.index*800)
+                 	// 调用动画函数  第一个参数  谁动画     第二个  走多少
+                 	square = key = this.index;  // 当前的索引号为主
+             	}
+         	}
+         	//  4. 添加定时器
+        	var timer = null;   // 轮播图的定时器
+        	var key = 0;  //控制播放张数
+        	var square = 0; // 控制小方块
+          	timer = setInterval(autoplay,5000);  // 开始轮播图定时器
+          	function autoplay() {
+              	key++;  // 先 ++
+              	if(key>ulLis.length - 1)  // 后判断
+              	{
+                  	ul.style.left = 0;  // 迅速调回
+                  	key = 1;  // 因为第6张就是第一张  第6张播放 下次播放第2张
+              	}
+              	animate(ul,-key*800);  // 再执行
+              	// 小方块
+              	square++;
+              	if(square > olLis.length -1)
+              	{
+                  	square = 0;
+              	}
+              	for(var i=0;i<olLis.length;i++)   // 先清除所有的
+              	{
+                  	olLis[i].className = "";
+              	}
+              	olLis[square].className = "current";  // 留下当前的
+          	}
+          	//last最后  鼠标经过大盒子要停止定时器
+         	box.onmouseover = function() {
+             	clearInterval(timer);
+         	}
+         	box.onmouseout = function() {
+             	timer = setInterval(autoplay,5000);  // 开始轮播图定时器
+         	}
+    	}
+	</SCRIPT>
+</head>
+<body>
+	<div>
+		<nav>
+			<ul>
+				<li><a href="#">企业官网</a></li>
+				<li><a href="#">在线商城</a></li>
+				<li><a href="#">用户信息</a></li>
+				<li><a href="#">购物中心</a></li>
+			</ul>
+		</nav>
+		<div id="left-box">
+			<ul>
+				<li><a href="#">女装/女鞋/女包</li>
+				<li><a href="#">男装/男鞋/男包</li>
+				<li><a href="#">美食/冲泡/零食</li>
+				<li><a href="#">家具/家电/家装</li>
+				<li><a href="#">珠宝/首饰/发簪</li>
+				<li><a href="#">百货/面膜/护肤</li>
+			</ul>
+		</div>
+		<div id="right-box">
+			<div id="screen">
+        		<ul id="ul">
+            		<li><img src="images/taobao/1.jpg" width="800" height="500" /></li>
+            		<li><img src="images/taobao/2.jpg" width="800" height="500" /></li>
+            		<li><img src="images/taobao/3.jpg" width="800" height="500" /></li>
+            		<li><img src="images/taobao/4.jpg" width="800" height="500" /></li>
+            		<li><img src="images/taobao/5.jpg" width="800" height="500" /></li>
+        		</ul>
+    		</div>
+		</div>
+		<div class="w shopping clearfix">
+            <dl>
+                <dt><a href="#">购物指南</a></dt>
+                <dd><a href="#">购物流程</a></dd>
+                <dd><a href="#">会员介绍</a></dd>
+                <dd><a href="#">生活旅行/团购</a></dd>
+                <dd><a href="#">常见问题</a></dd>
+                <dd><a href="#">大家电</a></dd>
+                <dd><a href="#">联系客服</a></dd>
+            </dl>
+            <dl>
+                <dt><a href="#">购物指南</a></dt>
+                <dd><a href="#">购物流程</a></dd>
+                <dd><a href="#">会员介绍</a></dd>
+                <dd><a href="#">生活旅行/团购</a></dd>
+                <dd><a href="#">常见问题</a></dd>
+                <dd><a href="#">大家电</a></dd>
+                <dd><a href="#">联系客服</a></dd>
+            </dl>
+            <dl>
+                <dt><a href="#">购物指南</a></dt>
+                <dd><a href="#">购物流程</a></dd>
+                <dd><a href="#">会员介绍</a></dd>
+                <dd><a href="#">生活旅行/团购</a></dd>
+                <dd><a href="#">常见问题</a></dd>
+                <dd><a href="#">大家电</a></dd>
+                <dd><a href="#">联系客服</a></dd>
+            </dl>
+            <dl>
+                <dt><a href="#">购物指南</a></dt>
+                <dd><a href="#">购物流程</a></dd>
+                <dd><a href="#">会员介绍</a></dd>
+                <dd><a href="#">生活旅行/团购</a></dd>
+                <dd><a href="#">常见问题</a></dd>
+                <dd><a href="#">大家电</a></dd>
+                <dd><a href="#">联系客服</a></dd>
+            </dl>
+            <dl>
+                <dt><a href="#">购物指南</a></dt>
+                <dd><a href="#">购物流程</a></dd>
+                <dd><a href="#">会员介绍</a></dd>
+                <dd><a href="#">生活旅行/团购</a></dd>
+                <dd><a href="#">常见问题</a></dd>
+                <dd><a href="#">大家电</a></dd>
+                <dd><a href="#">联系客服</a></dd>
+            </dl>
+            <div class="coverage">
+                <div class="dt">京东自营覆盖区县</div>
+                <div class="dd">
+                    <p> 京东已向全国2357个区县提供自营配送服务，支持货到付款、POS机刷卡和售后上门服务。</p>
+                    <p class="looklook"><a href="#">查看详情 ></a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="w againw">
+        <div class="links">
+            <a href="#">关于我们</a>|
+            <a href="#">联系我们</a>|
+            <a href="#">商家入驻</a>|
+            <a href="#">营销中心</a>|
+            <a href="#">手机京东</a>|
+            <a href="#">友情链接</a>|
+            <a href="#">销售联盟</a>|
+            <a href="#">京东社区</a>|
+            <a href="#">京东公益</a>|
+            <a href="#">English Site</a>|
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="copyright">
+            北京市公安局朝阳分局备案编号110105014669  |  京ICP证070359号  |  互联网药品信息服务资格证编号(京)-经营性-2014-0008  |  新出发京零 字第大120007号<br />
+            音像制品经营许可证苏宿批005号  |  出版物经营许可证编号新出发(苏)批字第N-012号  |  互联网出版许可证编号新出网证(京)字150号<br />
+            网络文化经营许可证京网文[2014]2148-348号  违法和不良信息举报电话：4006561155  Copyright © 2004-2015  京东JD.com 版权所有<br />
+            京东旗下网站：360TOP  拍拍网  网银在线
+        </div>
+	</div>
+</body>
+</html>
